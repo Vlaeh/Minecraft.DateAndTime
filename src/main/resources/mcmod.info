@@ -1,0 +1,16 @@
+[
+{
+  "modid": "dayandtime",
+  "name": "Day & Time",
+  "description": "Day phases and real time display mod.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Vlaeh"],
+  "credits": "The Forge and FML     guys, for making great job.",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
