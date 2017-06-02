@@ -14,7 +14,7 @@ import vlaeh.minecraft.forge.dateandtime.client.DateAndTimeClientProxy;
      name = DateAndTime.NAME, 
      clientSideOnly = true, 
      acceptableRemoteVersions = "*", 
-     acceptedMinecraftVersions = "[1.10,1.12)",
+     acceptedMinecraftVersions = "[1.9,1.12)",
      guiFactory = "vlaeh.minecraft.forge.dateandtime.DateAndTimeGUIFactory")
 public class DateAndTime {
 	public static final String MODID = "dayandtime";
