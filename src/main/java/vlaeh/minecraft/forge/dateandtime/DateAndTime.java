@@ -17,9 +17,9 @@ import vlaeh.minecraft.forge.dateandtime.client.DateAndTimeClientProxy;
      acceptedMinecraftVersions = "[1.9,1.13)",
      guiFactory = "vlaeh.minecraft.forge.dateandtime.DateAndTimeGUIFactory")
 public class DateAndTime {
-	public static final String MODID = "dayandtime";
-	public static final String VERSION = "1.3";
-	public static final String NAME = "Day & Time";
+    public static final String MODID = "dayandtime";
+    public static final String VERSION = "1.3";
+    public static final String NAME = "Day & Time";
 
     public static Configuration config;
     public static boolean printTimestamp = true;
@@ -27,28 +27,31 @@ public class DateAndTime {
     public static boolean printMoonPhases = true;
 
     @SidedProxy(clientSide = "vlaeh.minecraft.forge.dateandtime.client.DateAndTimeClientProxy")
-	public static DateAndTimeClientProxy proxy;
+    public static DateAndTimeClientProxy proxy;
 
-	@Mod.Instance
-	public static DateAndTime instance;
+    @Mod.Instance
+    public static DateAndTime instance;
 
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-    	config = new Configuration(event.getSuggestedConfigurationFile());
-    	syncConfig();
-	}
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent event) {
+        config = new Configuration(event.getSuggestedConfigurationFile());
+        syncConfig();
+    }
 
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event) {
-		proxy.postInit(event);
-	}
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        proxy.postInit(event);
+    }
 
-	public static void syncConfig() {
-		printTimestamp = config.getBoolean("1.printTimestamp", Configuration.CATEGORY_GENERAL, printTimestamp, "dateandtime.conf.timestamp.tooltip", "dateandtime.conf.timestamp");
-		printDayPhases = config.getBoolean("2.printDayPhases", Configuration.CATEGORY_GENERAL, printDayPhases, "dateandtime.conf.dayphases.tooltip", "dateandtime.conf.dayphases");
-		printMoonPhases = config.getBoolean("3.printMoonPhases", Configuration.CATEGORY_GENERAL, printMoonPhases, "dateandtime.conf.moonphases.tooltip", "dateandtime.conf.moonphases");
-	    if(config.hasChanged())
-	      config.save();
-	}
+    public static void syncConfig() {
+        printTimestamp = config.getBoolean("1.printTimestamp", Configuration.CATEGORY_GENERAL, printTimestamp,
+                "dateandtime.conf.timestamp.tooltip", "dateandtime.conf.timestamp");
+        printDayPhases = config.getBoolean("2.printDayPhases", Configuration.CATEGORY_GENERAL, printDayPhases,
+                "dateandtime.conf.dayphases.tooltip", "dateandtime.conf.dayphases");
+        printMoonPhases = config.getBoolean("3.printMoonPhases", Configuration.CATEGORY_GENERAL, printMoonPhases,
+                "dateandtime.conf.moonphases.tooltip", "dateandtime.conf.moonphases");
+        if (config.hasChanged())
+            config.save();
+    }
 
 }
