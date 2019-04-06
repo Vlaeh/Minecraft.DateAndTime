@@ -8,4 +8,5 @@ Download release jar file and move to the "mods" directory of Minecraft.
 
 ## Configuration
 
-Not yet available for 1.13
+Configuraiton is saved in file "config/dayandtime-client.toml"
+Config UI not yet available for 1.13
