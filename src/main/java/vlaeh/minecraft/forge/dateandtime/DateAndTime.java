@@ -24,13 +24,14 @@ public class DateAndTime {
 
 
     public DateAndTime() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+        LOGGER.info("Creating Date And Time mod");
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, DateAndTimeConfig.clientSpec);
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
     }
 
-    private void doClientStuff(final FMLClientSetupEvent event) {
-        LOGGER.info("Registering Date And Time mod");
+    @SubscribeEvent
+    public void doClientStuff(final FMLClientSetupEvent event) {
+        LOGGER.info("Registering Date And Time client mod");
         MinecraftForge.EVENT_BUS.register(new DateAndTimeClientProxy());
    }
 
