@@ -1,36 +1,37 @@
 package vlaeh.minecraft.forge.dateandtime;
 
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import vlaeh.minecraft.forge.dateandtime.client.DateAndTimeClientProxy;
 
-@Mod(modid = DateAndTime.MODID,
-     version = DateAndTime.VERSION, 
-     name = DateAndTime.NAME, 
-     clientSideOnly = true, 
-     acceptableRemoteVersions = "*", 
-     acceptedMinecraftVersions = "[1.9,1.13)",
-     guiFactory = "vlaeh.minecraft.forge.dateandtime.DateAndTimeGUIFactory")
+@Mod(DateAndTime.MODID)
+// TODO 1.13 guiFactory = "vlaeh.minecraft.forge.dateandtime.DateAndTimeGUIFactory")
 public class DateAndTime {
     public static final String MODID = "dayandtime";
-    public static final String VERSION = "1.3";
-    public static final String NAME = "Day & Time";
+    public static final Logger LOGGER = LogManager.getLogger();
 
-    public static Configuration config;
     public static boolean printTimestamp = true;
     public static boolean printDayPhases = true;
     public static boolean printMoonPhases = true;
 
-    @SidedProxy(clientSide = "vlaeh.minecraft.forge.dateandtime.client.DateAndTimeClientProxy")
-    public static DateAndTimeClientProxy proxy;
+    public DateAndTime() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+    }
 
-    @Mod.Instance
-    public static DateAndTime instance;
+    private void doClientStuff(final FMLClientSetupEvent event) {
+        LOGGER.info("Registering Date And Time mod");
+        MinecraftForge.EVENT_BUS.register(new DateAndTimeClientProxy());
+    }
+
+/* TODO 1.13
+    public static Configuration config;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -53,5 +54,6 @@ public class DateAndTime {
         if (config.hasChanged())
             config.save();
     }
+*/
 
 }

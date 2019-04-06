@@ -2,23 +2,22 @@ package vlaeh.minecraft.forge.dateandtime.client;
 
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientConnectedToServerEvent;
-import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
-
+import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import vlaeh.minecraft.forge.dateandtime.DateAndTime;
 
 public class DateAndTimeClientProxy {
 
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(this);
+    @SubscribeEvent
+    public void chatmessage(final ClientChatReceivedEvent event) {
+        if (DateAndTime.printTimestamp) {
+            TextComponentString message = new TextComponentString(DateAndTimeThread.getTime());
+            message.appendSibling(event.getMessage());
+            event.setMessage(message);
+        }
     }
 
+/* TODO 1.13
     @SubscribeEvent
     public void clientConnected(ClientConnectedToServerEvent event) {
         DateAndTimeThread.load();
@@ -34,14 +33,20 @@ public class DateAndTimeClientProxy {
         if (eventArgs.getModID().equals(DateAndTime.MODID))
             DateAndTime.syncConfig();
     }
+*/
+
+    int world_count = 0;
 
     @SubscribeEvent
-    public void chatmessage(final ClientChatReceivedEvent event) {
-        if (DateAndTime.printTimestamp) {
-            TextComponentString message = new TextComponentString(DateAndTimeThread.getTime());
-            message.appendSibling(event.getMessage());
-            event.setMessage(message);
-        }
+    public void worldLoad(WorldEvent.Load event) {
+        if (world_count++ == 0)
+            DateAndTimeThread.load();
+    }
+
+    @SubscribeEvent
+    public void worldUnload(WorldEvent.Unload event) {
+        if (--world_count == 0)
+            DateAndTimeThread.unload();
     }
 
 }

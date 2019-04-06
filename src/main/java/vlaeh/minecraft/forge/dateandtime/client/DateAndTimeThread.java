@@ -8,7 +8,6 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
-
 import vlaeh.minecraft.forge.dateandtime.DateAndTime;
 
 /**
@@ -65,7 +64,7 @@ public final class DateAndTimeThread extends Thread {
     }
 
     private final void schedule(final WorldClient world, final EntityPlayerSP player) {
-        final long totalTime = world.getWorldTime();
+        final long totalTime = world.getDayTime(); // TODO: check getWorldTime()
         if (totalTime == 0)
             return; // not yet initialized
         final long time = totalTime % 24000L;
@@ -108,7 +107,7 @@ public final class DateAndTimeThread extends Thread {
             final long sleepTime = 3000;
             if (DateAndTime.printDayPhases) {
                 try {
-                    final Minecraft minecraft = Minecraft.getMinecraft();
+                    final Minecraft minecraft = Minecraft.getInstance();
                     if (minecraft != null) {
                         final WorldClient world = minecraft.world;
                         final EntityPlayerSP player = minecraft.player;
@@ -120,13 +119,13 @@ public final class DateAndTimeThread extends Thread {
                             }
                     }
                 } catch (final Throwable e) {
-                    System.out.println("DateAndTimeThread loop error " + e);
+                    DateAndTime.LOGGER.error("DateAndTimeThread loop error", e);
                 }
             }
             try {
                 Thread.sleep(sleepTime);
             } catch (final Exception e) {
-                e.printStackTrace();
+                DateAndTime.LOGGER.error("DateAndTimeThread sleep", e);
             }
         }
     }
@@ -136,12 +135,12 @@ public final class DateAndTimeThread extends Thread {
         try {
             if (player == null)
                 return;
-            Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+            Minecraft.getInstance().addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
                     final ITextComponent component;
                     if (tooltip != null)
-                        component = ITextComponent.Serializer.jsonToComponent("{\"text\":\"" + getTime()
+                        component = ITextComponent.Serializer.fromJson("{\"text\":\"" + getTime()
                                 + "\", \"extra\":[{\"text\":\"" + message
                                 + "\",\"hoverEvent\":{\"action\":\"show_text\", \"value\":\"" + tooltip + "\"}}]}");
                     else
