@@ -24,7 +24,7 @@ public class DateAndTime {
 
 
     public DateAndTime() {
-        LOGGER.info("Creating Date And Time mod");
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, DateAndTimeConfig.clientSpec);
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
     }
