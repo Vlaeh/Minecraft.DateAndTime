@@ -139,7 +139,7 @@ public final class DateAndTimeThread extends Thread {
                                 + "\", \"extra\":[{\"text\":\"" + message
                                 + "\",\"hoverEvent\":{\"action\":\"show_text\", \"value\":\"" + tooltip + "\"}}]}");
                     else
-                        component = new TextComponentString(message);
+                        component = new TextComponentString(getTime() + message);
                     player.sendMessage(component);
                 }
             });
