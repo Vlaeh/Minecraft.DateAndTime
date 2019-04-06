@@ -20,6 +20,7 @@ public class DateAndTime {
     public static boolean printTimestamp = true;
     public static boolean printDayPhases = true;
     public static boolean printMoonPhases = true;
+    public static long threadCheckFrequency = 3000; // milliseconds
 
     public DateAndTime() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);

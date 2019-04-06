@@ -89,7 +89,7 @@ public final class DateAndTimeThread extends Thread {
             final String tooltip;
             final String message;
             if (DateAndTime.printMoonPhases) {
-                final int moonPhase = (int) ((totalTime / 24000L) % 8L);
+                final int moonPhase = world.getMoonPhase();
                 tooltip = I18n.format("dateandtime.moonphase.tooltip") + " " + moonPhases[moonPhase][1] + " "
                         + I18n.format(moonPhases[moonPhase][0]);
                 message = "§f" + moonPhases[moonPhase][1] + "§r " + I18n.format(dayPhases[phase]) + " ";
@@ -104,7 +104,6 @@ public final class DateAndTimeThread extends Thread {
     @Override
     public void run() {
         while (instance == this) {
-            final long sleepTime = 3000;
             if (DateAndTime.printDayPhases) {
                 try {
                     final Minecraft minecraft = Minecraft.getInstance();
@@ -112,18 +111,14 @@ public final class DateAndTimeThread extends Thread {
                         final WorldClient world = minecraft.world;
                         final EntityPlayerSP player = minecraft.player;
                         if ((world != null) && (player != null))
-                            try {
-                                schedule(world, player);
-                            } catch (final Throwable t) {
-                                t.printStackTrace();
-                            }
+                            schedule(world, player);
                     }
                 } catch (final Throwable e) {
                     DateAndTime.LOGGER.error("DateAndTimeThread loop error", e);
                 }
             }
             try {
-                Thread.sleep(sleepTime);
+                Thread.sleep(DateAndTime.threadCheckFrequency);
             } catch (final Exception e) {
                 DateAndTime.LOGGER.error("DateAndTimeThread sleep", e);
             }
