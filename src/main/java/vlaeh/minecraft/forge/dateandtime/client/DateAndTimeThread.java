@@ -65,7 +65,7 @@ public final class DateAndTimeThread extends Thread {
 
     private final void schedule(final WorldClient world, final EntityPlayerSP player) {
         final long totalTime = world.getDayTime(); // TODO: check getWorldTime()
-        if (totalTime == 0)
+        if ( (totalTime < lastCheck) && (totalTime == world.getGameTime()) )
             return; // not yet initialized
         final long time = totalTime % 24000L;
         final int phase;
