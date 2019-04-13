@@ -10,47 +10,39 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import vlaeh.minecraft.forge.dateandtime.client.DateAndTimeClientProxy;
+import vlaeh.minecraft.forge.dateandtime.client.DateAndTimeClientSide;
 
 @Mod(DateAndTime.MODID)
 // TODO 1.13 guiFactory = "vlaeh.minecraft.forge.dateandtime.DateAndTimeGUIFactory")
 public class DateAndTime {
     public static final String MODID = "dayandtime";
     public static final Logger LOGGER = LogManager.getLogger();
-    public static boolean printTimestamp = true;
-    public static boolean printDayPhases = true;
-    public static boolean printMoonPhases = true;
     public static long threadCheckFrequency = 3000; // milliseconds
 
-
     public DateAndTime() {
-        LOGGER.info("Creating Date And Time mod");
+        LOGGER.debug("Creating Date And Time mod");
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, DateAndTimeConfig.clientSpec);
         FMLJavaModLoadingContext.get().getModEventBus().register(this);
     }
 
     @SubscribeEvent
     public void doClientStuff(final FMLClientSetupEvent event) {
-        LOGGER.info("Registering Date And Time client mod");
-        MinecraftForge.EVENT_BUS.register(new DateAndTimeClientProxy());
+        LOGGER.debug("Registering Date And Time client mod");
+        MinecraftForge.EVENT_BUS.register(new DateAndTimeClientSide());
    }
 
     @SubscribeEvent
     public void onLoad(final ModConfig.Loading configEvent) {
-        syncConfig(configEvent.getConfig());
+        final ModConfig config = configEvent.getConfig();
+        LOGGER.debug("Loading configuration {}", config);
+        DateAndTimeConfig.instance.updateConfig(config.getConfigData());
     }
 
     @SubscribeEvent
     public void onFileChange(final ModConfig.ConfigReloading configEvent) {
-        syncConfig(configEvent.getConfig());
-    }
-
-    private void syncConfig(final ModConfig config) {
-        LOGGER.debug("Loading configuration from {}", config.getFileName());
-        config.getConfigData().valueMap().forEach((key, value) -> {LOGGER.info("-- {} = {}", key, value);} );
-        printTimestamp = config.getConfigData().get(DateAndTimeConfig.instance.timestamp.getPath());
-        printDayPhases = config.getConfigData().get(DateAndTimeConfig.instance.dayPhases.getPath());
-        printMoonPhases = config.getConfigData().get(DateAndTimeConfig.instance.moonPhases.getPath());
+        final ModConfig config = configEvent.getConfig();
+        LOGGER.debug("file changed {}", config);
+        DateAndTimeConfig.instance.updateConfig(config.getConfigData());
     }
 
 }

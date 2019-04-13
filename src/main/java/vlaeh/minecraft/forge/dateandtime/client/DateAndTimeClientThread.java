@@ -9,6 +9,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import vlaeh.minecraft.forge.dateandtime.DateAndTime;
+import vlaeh.minecraft.forge.dateandtime.DateAndTimeConfig;
 
 /**
  * 
@@ -22,9 +23,9 @@ import vlaeh.minecraft.forge.dateandtime.DateAndTime;
  * 20m    24000 = 0
  */
 
-public final class DateAndTimeThread extends Thread {
+public final class DateAndTimeClientThread extends Thread {
     private final static Calendar cal = Calendar.getInstance();
-    private static DateAndTimeThread instance = null;
+    private static DateAndTimeClientThread instance = null;
 
     private final static String[] dayPhases = { //
             "dateandtime.dayphase.morning", // 0
@@ -46,7 +47,7 @@ public final class DateAndTimeThread extends Thread {
             { "dateandtime.moonphase.waxinggibbous", "\u263D", "\ud83c\udf14" } };
 
     public static void load() {
-        final DateAndTimeThread d = instance = new DateAndTimeThread();
+        final DateAndTimeClientThread d = instance = new DateAndTimeClientThread();
         d.start();
     }
 
@@ -57,7 +58,7 @@ public final class DateAndTimeThread extends Thread {
     private int lastPhase = -1;
     private long lastCheck = 0;
 
-    public DateAndTimeThread() {
+    public DateAndTimeClientThread() {
         super();
         setName("DateAndTimeThread");
         setDaemon(true);
@@ -65,7 +66,7 @@ public final class DateAndTimeThread extends Thread {
 
     private final void schedule(final WorldClient world, final EntityPlayerSP player) {
         final long totalTime = world.getDayTime(); // TODO: check getWorldTime()
-        if ( (totalTime < lastCheck) && (totalTime == world.getGameTime()) )
+        if ( (totalTime <= lastCheck) && (totalTime == world.getGameTime()) )
             return; // not yet initialized
         final long time = totalTime % 24000L;
         final int phase;
@@ -88,7 +89,7 @@ public final class DateAndTimeThread extends Thread {
             lastCheck = totalTime;
             final String tooltip;
             final String message;
-            if (DateAndTime.printMoonPhases) {
+            if (DateAndTimeConfig.printMoonPhases) {
                 final int moonPhase = world.getMoonPhase();
                 tooltip = I18n.format("dateandtime.moonphase.tooltip") + " " + moonPhases[moonPhase][1] + " "
                         + I18n.format(moonPhases[moonPhase][0]);
@@ -103,8 +104,9 @@ public final class DateAndTimeThread extends Thread {
 
     @Override
     public void run() {
+        DateAndTime.LOGGER.debug("DateAndTimeThread start");
         while (instance == this) {
-            if (DateAndTime.printDayPhases) {
+            if (DateAndTimeConfig.printDayPhases) {
                 try {
                     final Minecraft minecraft = Minecraft.getInstance();
                     if (minecraft != null) {
@@ -123,6 +125,7 @@ public final class DateAndTimeThread extends Thread {
                 DateAndTime.LOGGER.error("DateAndTimeThread sleep", e);
             }
         }
+        DateAndTime.LOGGER.debug("DateAndTimeThread stop");
     }
 
     private static final void sendMessageToPlayer(final String message, final String tooltip,
@@ -148,7 +151,7 @@ public final class DateAndTimeThread extends Thread {
     }
 
     public static final String getTime() {
-        if (!DateAndTime.printTimestamp)
+        if (!DateAndTimeConfig.printTimestamp)
             return "";
         cal.setTimeInMillis(System.currentTimeMillis());
         final int hour = cal.get(Calendar.HOUR_OF_DAY);
