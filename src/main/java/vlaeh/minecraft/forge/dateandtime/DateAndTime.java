@@ -15,7 +15,7 @@ import vlaeh.minecraft.forge.dateandtime.client.DateAndTimeClientSide;
 @Mod(DateAndTime.MODID)
 // TODO 1.13 guiFactory = "vlaeh.minecraft.forge.dateandtime.DateAndTimeGUIFactory")
 public class DateAndTime {
-    public static final String MODID = "dayandtime";
+    public static final String MODID = "dateandtime";
     public static final Logger LOGGER = LogManager.getLogger();
     public static long threadCheckFrequency = 3000; // milliseconds
 
@@ -34,14 +34,14 @@ public class DateAndTime {
     @SubscribeEvent
     public void onLoad(final ModConfig.Loading configEvent) {
         final ModConfig config = configEvent.getConfig();
-        LOGGER.debug("Loading configuration {}", config);
+        DateAndTime.LOGGER.debug("Loading configuration {}", config);
         DateAndTimeConfig.instance.updateConfig(config.getConfigData());
     }
 
     @SubscribeEvent
-    public void onFileChange(final ModConfig.ConfigReloading configEvent) {
+    public void onFileChange(final ModConfig.Reloading configEvent) {
         final ModConfig config = configEvent.getConfig();
-        LOGGER.debug("file changed {}", config);
+        DateAndTime.LOGGER.debug("file changed {}", config);
         DateAndTimeConfig.instance.updateConfig(config.getConfigData());
     }
 

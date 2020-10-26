@@ -3,11 +3,11 @@ package vlaeh.minecraft.forge.dateandtime.client;
 import java.util.Calendar;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import vlaeh.minecraft.forge.dateandtime.DateAndTime;
 import vlaeh.minecraft.forge.dateandtime.DateAndTimeConfig;
 
@@ -64,7 +64,7 @@ public final class DateAndTimeClientThread extends Thread {
         setDaemon(true);
     }
 
-    private final void schedule(final WorldClient world, final EntityPlayerSP player) {
+    private final void schedule(final ClientWorld world, final ClientPlayerEntity player) {
         final long totalTime = world.getDayTime(); // TODO: check getWorldTime()
         if ( (totalTime <= lastCheck) && (totalTime == world.getGameTime()) )
             return; // not yet initialized
@@ -110,8 +110,8 @@ public final class DateAndTimeClientThread extends Thread {
                 try {
                     final Minecraft minecraft = Minecraft.getInstance();
                     if (minecraft != null) {
-                        final WorldClient world = minecraft.world;
-                        final EntityPlayerSP player = minecraft.player;
+                        final ClientWorld world = minecraft.world;
+                        final ClientPlayerEntity player = minecraft.player;
                         if ((world != null) && (player != null))
                             schedule(world, player);
                     }
@@ -129,21 +129,21 @@ public final class DateAndTimeClientThread extends Thread {
     }
 
     private static final void sendMessageToPlayer(final String message, final String tooltip,
-            final EntityPlayerSP player) {
+            final ClientPlayerEntity player) {
         try {
             if (player == null)
                 return;
-            Minecraft.getInstance().addScheduledTask(new Runnable() {
+            Minecraft.getInstance().deferTask(new Runnable() {
                 @Override
                 public void run() {
                     final ITextComponent component;
                     if (tooltip != null)
-                        component = ITextComponent.Serializer.fromJson("{\"text\":\"" + getTime()
+                        component = ITextComponent.Serializer.getComponentFromJson("{\"text\":\"" + getTime()
                                 + "\", \"extra\":[{\"text\":\"" + message
                                 + "\",\"hoverEvent\":{\"action\":\"show_text\", \"value\":\"" + tooltip + "\"}}]}");
                     else
-                        component = new TextComponentString(getTime() + message);
-                    player.sendMessage(component);
+                        component = new StringTextComponent(getTime() + message);
+                    player.sendMessage(component, null);
                 }
             });
         } catch (Throwable t) {

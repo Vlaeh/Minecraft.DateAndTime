@@ -8,7 +8,9 @@ Download release jar file and move to the "mods" directory of Minecraft.
 
 ## Configuration
 
-UI not yet available for 1.13
+UI not yet available for 1.16 (see https://github.com/MinecraftForge/MinecraftForge/pull/7395)
 
-Configuraiton is saved in file "config/dayandtime-client.toml"
+Configuration is saved in file "config/dateandtime-client.toml".
+Configuration is automatically updated when file is changed.
+
 

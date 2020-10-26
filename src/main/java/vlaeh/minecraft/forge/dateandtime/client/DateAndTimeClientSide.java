@@ -1,9 +1,12 @@
 package vlaeh.minecraft.forge.dateandtime.client;
 
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggedInEvent;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent.LoggedOutEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import vlaeh.minecraft.forge.dateandtime.DateAndTime;
 import vlaeh.minecraft.forge.dateandtime.DateAndTimeConfig;
 
 public class DateAndTimeClientSide {
@@ -11,23 +14,21 @@ public class DateAndTimeClientSide {
     @SubscribeEvent
     public void chatmessage(final ClientChatReceivedEvent event) {
         if (DateAndTimeConfig.printTimestamp) {
-            TextComponentString message = new TextComponentString(DateAndTimeClientThread.getTime());
-            message.appendSibling(event.getMessage());
+            StringTextComponent message = new StringTextComponent(DateAndTimeClientThread.getTime());
+            message.append(event.getMessage());
             event.setMessage(message);
         }
     }
 
-/* TODO 1.13
     @SubscribeEvent
-    public void clientConnected(ClientConnectedToServerEvent event) {
-        DateAndTimeThread.load();
+    public void clientConnected(LoggedInEvent event) {
+        DateAndTime.LOGGER.info("Logged in " + event.getPlayer());
     }
 
     @SubscribeEvent
-    public void clientDisconnected(ClientDisconnectionFromServerEvent event) {
-        DateAndTimeThread.unload();
+    public void clientDisconnected(LoggedOutEvent event) {
+        DateAndTime.LOGGER.info("Logged out " + event.getPlayer());
     }
-*/
 
     int world_count = 0;
 
@@ -35,12 +36,14 @@ public class DateAndTimeClientSide {
     public void worldLoad(WorldEvent.Load event) {
         if (world_count++ == 0)
             DateAndTimeClientThread.load();
+        DateAndTime.LOGGER.info("World load " + world_count);
     }
 
     @SubscribeEvent
     public void worldUnload(WorldEvent.Unload event) {
         if (--world_count == 0)
             DateAndTimeClientThread.unload();
+        DateAndTime.LOGGER.info("World unload " + world_count);
     }
 
 }
