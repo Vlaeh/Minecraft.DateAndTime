@@ -3,25 +3,25 @@ loaderVersion="[${javafml_min},${javafml_max})"
 license="MIT"
 
 [[mods]]
-    modId="dateandtime"
+    modId="${mod_id}"
     version="${version}"
-    displayName="Date and Time"
-    authors="Vlaeh"
+    displayName="${mod_title}"
+    authors="${mod_author}"
     description='''
-A little of this, a little of that, a lot of tinkering, and a lot of tools
+Client side mod adding local time to chat and sending message about in-game day and moon phases.
     '''
 
-[[dependencies.dateandtime]]
+[[dependencies.${mod_id}]]
     modId="forge"
     mandatory=true
     versionRange="[${forge_version_min},${forge_version_max})"
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
 
-[[dependencies.dateandtime]]
+[[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
     versionRange="[${minecraft_version_min},${minecraft_version_max})"
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
 
